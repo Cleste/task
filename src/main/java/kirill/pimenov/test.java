@@ -1,9 +1,7 @@
 package kirill.pimenov;
 
 import org.apache.log4j.Logger;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -21,13 +19,12 @@ public class test {
         switch (args[0]) {
             case ("sync"): {
                 Document document;
-                document = pullXml(args[1]);
-                NodeList name = document.getElementsByTagName("firstname");
-                System.out.println(name);
+                document = XmlParser.parse(args[1]);
+                NodeList departments = document.getElementsByTagName("department");
                 break;
             }
             default: {
-                log.error("Введена не существующая команда не верная комманда.");
+                log.error("Введена не существующая команда.");
                 System.out.println("Введена не существующая команда. Введите одну из двух команд" +
                         ": sync xml_name или pull xml_name");
 
@@ -35,17 +32,5 @@ public class test {
         }
     }
 
-    private static Document pullXml(String fileName) {
-        Document document = null;
-        File xmlFile;
-        try {
-            xmlFile = new File(fileName);
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            document = documentBuilder.parse(xmlFile);
-        } catch (Exception e) {
-            log.error("Ошибка", e);
-        }
-        return document;
-    }
+
 }
