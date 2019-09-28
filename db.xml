@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <departments>
-    <department>
-        <code>002</code>
-        <job>programmer</job>
-        <description>Writes programs</description>
+    <department code = "002" job = "programmer" description = "Writes programs">
     </department>
-    <department>
-        <code>001</code>
-        <job>accountant</job>
-        <description>Counts money</description>
+    <department code = "001" job = "accountant" description = "Counts money">
     </department>
 </departments>

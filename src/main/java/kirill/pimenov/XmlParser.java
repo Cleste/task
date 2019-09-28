@@ -1,13 +1,14 @@
 package kirill.pimenov;
 
+import kirill.pimenov.Exceptions.EmptyXmlException;
 import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 
-public class XmlParser {
-    static Document parse(String fileName) {
+class XmlParser {
+    static Document parse(String fileName) throws EmptyXmlException {
         Document document = null;
         File xmlFile;
         try {
@@ -19,6 +20,7 @@ public class XmlParser {
         } catch (Exception e) {
             System.out.println(e);
         }
+        if (document == null) throw new EmptyXmlException();
         return document;
     }
 }
