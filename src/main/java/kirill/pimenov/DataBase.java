@@ -1,9 +1,11 @@
 package kirill.pimenov;
 
+import kirill.pimenov.Exceptions.EmptyDBException;
+
 import java.io.FileInputStream;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Properties;
 
 public class DataBase {
@@ -22,7 +24,6 @@ public class DataBase {
             statement = connection.createStatement();
         } catch (Exception e) {
             iisSoftTask.log.error(e);
-            System.out.println(e);
         }
     }
 
@@ -35,10 +36,32 @@ public class DataBase {
                 keys.add(new CodeJobKey(resultSet.getString("DepCode"),
                         resultSet.getString("DepJob")));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            if (keys.isEmpty()) throw new EmptyDBException();
+        } catch (SQLException | EmptyDBException e) {
+            iisSoftTask.log.error(e);
         }
         return keys;
+    }
+
+    HashMap<CodeJobKey, String> pullAll() {
+        String query = "SELECT * from departments";
+        HashMap<CodeJobKey, String> departments = new HashMap<>();
+        try {
+            resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                departments.put(new CodeJobKey(resultSet.getString("DepCode"),
+                        resultSet.getString("DepJob")), resultSet.getString("Description"));
+            }
+
+        } catch (SQLException e) {
+            iisSoftTask.log.error(e);
+        }
+        if (departments.isEmpty()) try {
+            throw new EmptyDBException();
+        } catch (EmptyDBException e) {
+            iisSoftTask.log.error(e);
+        }
+        return departments;
     }
 
     void insert(CodeJobKey key, String description) {
@@ -47,7 +70,7 @@ public class DataBase {
         try {
             statement.executeUpdate(query);
         } catch (SQLException e) {
-            e.printStackTrace();
+            iisSoftTask.log.error(e);
         }
     }
 
@@ -57,7 +80,7 @@ public class DataBase {
             statement.close();
             resultSet.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            iisSoftTask.log.error(e);
         }
 
     }
@@ -68,7 +91,7 @@ public class DataBase {
         try {
             statement.executeUpdate(query);
         } catch (SQLException e) {
-            e.printStackTrace();
+            iisSoftTask.log.error(e);
         }
     }
 
@@ -78,7 +101,7 @@ public class DataBase {
         try {
             statement.executeUpdate(query);
         } catch (SQLException e) {
-            e.printStackTrace();
+            iisSoftTask.log.error(e);
         }
     }
 }

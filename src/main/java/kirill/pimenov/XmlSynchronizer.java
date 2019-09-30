@@ -27,7 +27,6 @@ class XmlSynchronizer {
             document.getDocumentElement().normalize();
         } catch (Exception e) {
             iisSoftTask.log.error(e);
-            System.out.println(e);
         }
         if (document == null) throw new EmptyXmlException();
     }
