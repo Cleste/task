@@ -5,6 +5,14 @@ import java.util.Objects;
 public class CodeJobKey {
     private String code, job;
 
+    public String getCode() {
+        return code;
+    }
+
+    public String getJob() {
+        return job;
+    }
+
     CodeJobKey(String code, String job) {
         this.code = code;
         this.job = job;
