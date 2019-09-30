@@ -8,16 +8,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
-public class DataBase {
+/**
+ * Connects to data base, stores that connection and does manipulations with data.
+ */
+class DataBase {
+    /*
+    *   Connection, statement and resultSet are used to connect
+    *   to the database and unload data from it.
+     */
     private Connection connection;
     private Statement statement;
     private ResultSet resultSet;
 
-
+    /**
+     * Connects to the database according to the settings specified in the settings.properties
+     */
     void connect() {
         try {
             Properties property = new Properties();
-            FileInputStream fis = new FileInputStream("src/main/resources/settings.properties");
+            FileInputStream fis = new FileInputStream("settings.properties");
             property.load(fis);
             connection = DriverManager.getConnection(property.getProperty("db.host"),
                     property.getProperty("db.login"), property.getProperty("db.password"));
@@ -27,6 +36,10 @@ public class DataBase {
         }
     }
 
+    /**
+     * Unloads all keys from data base to ArrayList.
+     * @return array of all keys. ArrayList<CodeJobKey>
+     */
     ArrayList<CodeJobKey> pullKeys() {
         String query = "SELECT DepCode, DepJob from departments";
         ArrayList<CodeJobKey> keys = new ArrayList<>();
@@ -43,6 +56,10 @@ public class DataBase {
         return keys;
     }
 
+    /**
+     * Unloads all data from data base to HashMap.
+     * @return HashMap of all data. HashMap<CodeJobKey, String>
+     */
     HashMap<CodeJobKey, String> pullAll() {
         String query = "SELECT * from departments";
         HashMap<CodeJobKey, String> departments = new HashMap<>();
@@ -64,6 +81,11 @@ public class DataBase {
         return departments;
     }
 
+    /**
+     * Inserts new row to data base.
+     * @param key consisting of code and job
+     * @param description of department
+     */
     void insert(CodeJobKey key, String description) {
         String query = "INSERT INTO departments(DepCode, DepJob, Description) VALUES ('"
                 + key.getCode() + "','" + key.getJob() + "','" + description + "')";
@@ -74,6 +96,9 @@ public class DataBase {
         }
     }
 
+    /**
+     * Closes connection to data base.
+     */
     void close() {
         try {
             connection.close();
@@ -85,6 +110,11 @@ public class DataBase {
 
     }
 
+    /**
+     * Updates a row in the database.
+     * @param key consisting of code and job
+     * @param description of department
+     */
     void update(CodeJobKey key, String description) {
         String query = "UPDATE departments SET Description = '" + description +
                 "' where DepCode = '" + key.getCode() + "' and DepJob = '" + key.getJob() + "'";
@@ -94,7 +124,10 @@ public class DataBase {
             iisSoftTask.log.error(e);
         }
     }
-
+    /**
+     * Deletes a row by key in the database.
+     * @param key consisting of code and job
+     */
     void delete(CodeJobKey key) {
         String query = "DELETE from departments " +
                 "where DepCode = '" + key.getCode() + "' and DepJob = '" + key.getJob() + "'";

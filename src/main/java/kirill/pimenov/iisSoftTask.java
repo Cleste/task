@@ -6,22 +6,33 @@ import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 
+/**
+ * The main class. It performs one of two functions:
+ * synchronizing an XML file with a database or uploading a database to an XML file.
+ */
 public class iisSoftTask {
-
+    /**
+     * Logging variable.
+     */
     static final Logger log = Logger.getLogger(iisSoftTask.class);
 
     public static void main(String[] args) {
         log.info("Запуск программы!");
+        /*
+          Database instance
+         */
         DataBase dataBase = new DataBase();
         switch (args[0]) {
             case ("sync"): {
                 try {
+                    dataBase.connect();
+                    log.info("Установлено соединение с базой данных.");
                     XmlSynchronizer synchronizer = new XmlSynchronizer(args[1]);
                     log.info("Данные выгружены из XML файла.");
                     synchronizer.parseNodeToMap();
-                    log.info("Данные скопированы в HashMap.");
-                    dataBase.connect();
-                    log.info("Установлено соединение с базой данных.");
+                    /*
+                      An array containing keys from the database.
+                     */
                     ArrayList<CodeJobKey> keys = dataBase.pullKeys();
                     synchronizer.sync(dataBase, keys);
                     log.info("Данные синхронизированы.");
@@ -35,14 +46,16 @@ public class iisSoftTask {
             case ("pull"): {
                 dataBase.connect();
                 log.info("Установлено соединение с базой данных.");
-                DBtoXml dBtoXml = new DBtoXml(dataBase);
+                /*
+                  Class instance created to unload data from a database to an XML file.
+                 */
+                DataBaseToXML DBtoXML = new DataBaseToXML(dataBase);
                 log.info("Данные выгружены из базы данных.");
-                dBtoXml.createDocument();
-                log.info("Документ создан.");
-                dBtoXml.saveToXml(args[1]);
+                DBtoXML.createDocument();
+                DBtoXML.saveToXml(args[1]);
                 log.info("Данные сохранены в XML файл.");
                 dataBase.close();
-                log.info("Соединение закрыто");
+                log.info("Соединение закрыто.");
                 break;
             }
             default: {
@@ -51,7 +64,9 @@ public class iisSoftTask {
                         "readme.txt");
 
             }
+
         }
+        log.info("Завершение программы.");
     }
 
 

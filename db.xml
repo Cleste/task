@@ -1,8 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <departments>
-    <department code="003" job="programmer" description="OP">
-    </department>
-    <department code="003" job="writer" description="Writes programs">
-    </department>
-    <department code="004" job="accountant" description="Counts money">
-    </department>
+    <department code="003" job="programmer" description="453P"/>
+    <department code="0033" job="writer" description="Writes programs"/>
 </departments>

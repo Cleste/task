@@ -13,11 +13,22 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Synchronizes xml file with database.
+ */
 class XmlSynchronizer {
+    /*
+    * Document store data from XML file.HashMap is used to load data into the database.
+     */
     private Document document;
     private HashMap<CodeJobKey, String> departmentsMap = new HashMap<>();
 
-    public XmlSynchronizer(String file) throws EmptyXmlException {
+    /**
+     * Synchronizes xml file with database.
+     * @param file XML file name
+     * @throws EmptyXmlException
+     */
+    XmlSynchronizer(String file) throws EmptyXmlException {
         File xmlFile;
         try {
             xmlFile = new File(file);
@@ -30,6 +41,11 @@ class XmlSynchronizer {
         }
         if (document == null) throw new EmptyXmlException();
     }
+
+    /**
+     * Parses XML file to HashMap.
+     * @throws WrongXmlFormat
+     */
     void parseNodeToMap() throws WrongXmlFormat {
         NodeList departmentsList = document.getElementsByTagName("department");
         for (int temp = 0, length = departmentsList.getLength(); temp < length; temp++) {
@@ -49,17 +65,27 @@ class XmlSynchronizer {
 
         }
     }
+
+    /**
+     * Synchronizes HashMap with database.
+     * @param dataBase connection.
+     * @param keys array contains keys from data base.
+     */
     void sync(DataBase dataBase, ArrayList<CodeJobKey> keys){
         for (CodeJobKey key: departmentsMap.keySet()){
             if(keys.contains(key)){
                 dataBase.update(key, departmentsMap.get(key));
+                iisSoftTask.log.info("Элемент " + key + " обновлен.");
                 keys.remove(key);
-            } else
+            } else {
                 dataBase.insert(key, departmentsMap.get(key));
+                iisSoftTask.log.info("Элемент " + key + " добавлен.");
+            }
         }
         if(!keys.isEmpty()) {
             for (CodeJobKey key: keys){
                 dataBase.delete(key);
+                iisSoftTask.log.info("Элемент " + key + " удален.");
             }
         }
     }
